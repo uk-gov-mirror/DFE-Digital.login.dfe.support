@@ -1,3 +1,4 @@
+require('newrelic');
 const logger = require('./infrastructure/logger');
 const appInsights = require('applicationinsights');
 const express = require('express');
