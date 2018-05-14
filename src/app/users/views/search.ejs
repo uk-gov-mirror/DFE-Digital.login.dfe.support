@@ -4,260 +4,325 @@
 </div>
 <% } %>
 
-<div class="row">
-    <div class="col-6">
-        <h1 class="heading-xlarge">Users</h1>
+<div id="vue-wrap">
+
+    <div class="row">
+        <div class="col-6">
+            <h1 class="heading-xlarge"> Users </h1>
+        </div>
     </div>
-</div>
 
-<%
-const paginationModel = {
-    method: 'post',
-    csrfToken,
-    currentPage: locals.page,
-    numberOfPages: locals.numberOfPages,
-    totalNumberOfResults: locals.totalNumberOfResults,
-    numberOfResultsOnPage: locals.users.length,
-    data: [
-        { key: 'criteria', value: locals.criteria },
-        { key: 'sort', value: locals.sortBy },
-        { key: 'sortDir', value: locals.sortOrder },
-        { key: 'showFilters', value: locals.showFilters }
-    ]
-}
-if (organisationTypes && organisationTypes.length > 0) {
-    const selected = organisationTypes.filter(x => x.isSelected);
-    selected.forEach((item) => {
-      paginationModel.data.push({ key: 'organisationType', value: item.id });
-    });
-}
-if (accountStatuses && accountStatuses.length > 0) {
-    const selected = accountStatuses.filter(x => x.isSelected);
-    selected.forEach((item) => {
-        paginationModel.data.push({ key: 'accountStatus', value: item.id });
-    });
-}
-if (services && services.length > 0) {
-    const selected = services.filter(x => x.isSelected);
-    selected.forEach((item) => {
-        paginationModel.data.push({ key: 'service', value: item.id });
-    });
-}
-%>
+    <%
+    const paginationModel = {
+        method: 'post',
+        csrfToken,
+        currentPage: locals.page,
+        numberOfPages: locals.numberOfPages,
+        totalNumberOfResults: locals.totalNumberOfResults,
+        numberOfResultsOnPage: locals.users.length,
+        data: [
+            { key: 'criteria', value: locals.criteria },
+            { key: 'sort', value: locals.sortBy },
+            { key: 'sortDir', value: locals.sortOrder },
+            { key: 'showFilters', value: locals.showFilters }
+        ]
+    }
+    if (organisationTypes && organisationTypes.length > 0) {
+        const selected = organisationTypes.filter(x => x.isSelected);
+        selected.forEach((item) => {
+          paginationModel.data.push({ key: 'organisationType', value: item.id });
+        });
+    }
+    if (accountStatuses && accountStatuses.length > 0) {
+        const selected = accountStatuses.filter(x => x.isSelected);
+        selected.forEach((item) => {
+            paginationModel.data.push({ key: 'accountStatus', value: item.id });
+        });
+    }
+    if (services && services.length > 0) {
+        const selected = services.filter(x => x.isSelected);
+        selected.forEach((item) => {
+            paginationModel.data.push({ key: 'service', value: item.id });
+        });
+    }
+    %>
 
-<div class="row row-spacer">
-    <div class="col-6">
-        <form method="post">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-            <input type="hidden" name="showFilters" value="<%= showFilters %>"/>
+    <div class="row row-spacer">
+        <div class="col-6">
+            <form method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+                <input type="hidden" name="showFilters" value="<%= showFilters %>"/>
 
-            <% for (let i = 0; i < organisationTypes.length; i += 1) { %>
-            <% if (organisationTypes[i].isSelected) { %>
-            <input name="organisationType" value="<%= organisationTypes[i].id %>" type="hidden">
-            <% } %>
-            <% } %>
+                <% for (let i = 0; i < organisationTypes.length; i += 1) { %>
+                <% if (organisationTypes[i].isSelected) { %>
+                <input name="organisationType" value="<%= organisationTypes[i].id %>" type="hidden">
+                <% } %>
+                <% } %>
 
-            <% for (let i = 0; i < accountStatuses.length; i += 1) { %>
-            <% if (accountStatuses[i].isSelected) { %>
-            <input name="accountStatus" value="<%= accountStatuses[i].id %>" type="hidden">
-            <% } %>
-            <% } %>
+                <% for (let i = 0; i < accountStatuses.length; i += 1) { %>
+                <% if (accountStatuses[i].isSelected) { %>
+                <input name="accountStatus" value="<%= accountStatuses[i].id %>" type="hidden">
+                <% } %>
+                <% } %>
 
-            <% for (let i = 0; i < services.length; i += 1) { %>
-            <% if (services[i].isSelected) { %>
-            <input name="service" value="<%= services[i].id %>" type="hidden">
-            <% } %>
-            <% } %>
+                <% for (let i = 0; i < services.length; i += 1) { %>
+                <% if (services[i].isSelected) { %>
+                <input name="service" value="<%= services[i].id %>" type="hidden">
+                <% } %>
+                <% } %>
 
-            <div class="search-field">
-                <fieldset class="search-input">
-                    <label for="criteria" class="vh">Search by name, email or organisation</label>
-                    <input type="text" id="criteria" name="criteria" value="<%= criteria %>" class="form-control"
-                           placeholder="Search by name, email or organisation">
-                </fieldset>
-                <fieldset class="search-submit">
-                    <button type="submit" class="button">Search</button>
-                </fieldset>
+                <div class="search-field">
+                    <fieldset class="search-input">
+                        <label for="criteria" class="vh">Search by name, email or organisation</label>
+                        <input type="text" id="criteria" name="criteria" value="<%= criteria %>" class="form-control"
+                               placeholder="Search by name, email or organisation">
+                    </fieldset>
+                    <fieldset class="search-submit">
+                        <button type="submit" class="button">Search</button>
+                    </fieldset>
+                </div>
+            </form>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+                <input type="hidden" name="criteria" value="<%= criteria %>"/>
+                <input type="hidden" name="page" value="<%= page %>"/>
+                <input type="hidden" name="sort" value="<%= sortBy %>"/>
+                <input type="hidden" name="sortDir" value="<%= sortOrder %>"/>
+                <input type="hidden" name="showFilters" value="<%= !showFilters %>"/>
+
+                <button type="submit" class="button-link"><%= (showFilters ? 'Hide' : 'Show') %> filters</button>
+            </form>
+        </div>
+        <div class="col-6">
+            <div class="pull-right">
+                <% if(useGenericAddUser) { %>
+                <a href="/users/new-user" class="button button-secondary">Add User</a>
+                <% } else { %>
+                <a href="/users/new-k2s-user" class="button button-secondary">Add User</a>
+                <% } %>
             </div>
-        </form>
-        <form method="post">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-            <input type="hidden" name="criteria" value="<%= criteria %>"/>
-            <input type="hidden" name="page" value="<%= page %>"/>
-            <input type="hidden" name="sort" value="<%= sortBy %>"/>
-            <input type="hidden" name="sortDir" value="<%= sortOrder %>"/>
-            <input type="hidden" name="showFilters" value="<%= !showFilters %>"/>
-
-            <button type="submit" class="button-link"><%= (showFilters ? 'Hide' : 'Show') %> filters</button>
-        </form>
+        </div>
     </div>
-    <div class="col-6">
-        <div class="pull-right">
-            <% if(useGenericAddUser) { %>
-            <a href="/users/new-user" class="button button-secondary">Add User</a>
-            <% } else { %>
-            <a href="/users/new-k2s-user" class="button button-secondary">Add User</a>
-            <% } %>
+
+
+    <div class="row">
+        <% if (showFilters) { %>
+        <div class="col-4">
+            <form method="post" id="filter-form">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+                <input type="hidden" name="criteria" value="<%= criteria %>"/>
+                <input type="hidden" name="page" value="<%= page %>"/>
+                <input type="hidden" name="sort" value="<%= sortBy %>"/>
+                <input type="hidden" name="sortDir" value="<%= sortOrder %>"/>
+                <input type="hidden" name="showFilters" value="true"/>
+
+                <div class="filter-box">
+                    <div class="container-head js-container-head">
+                        <div class="option-select-label">
+                            Organisation type
+                        </div>
+                    </div>
+                    <div role="group" aria-labelledby="option-select-title-organisationtype" class="options-container"
+                         id="organisationtypes">
+                        <div class="js-auto-height-inner">
+                            <% for (let i = 0; i < organisationTypes.length; i += 1) { %>
+                            <label>
+                                <input name="organisationType" value="<%= organisationTypes[i].id %>"
+                                       type="checkbox" <%= (organisationTypes[i].isSelected ? 'checked="checked"' : '') %>>
+                                <%= organisationTypes[i].name %>
+                            </label>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-box">
+                    <div class="container-head js-container-head">
+                        <div class="option-select-label">
+                            Account status
+                        </div>
+                    </div>
+                    <div role="group" aria-labelledby="option-select-title-account-status" class="options-container"
+                         id="account-status">
+                        <div class="js-auto-height-inner">
+                            <% for (let i = 0; i < accountStatuses.length; i += 1) { %>
+                            <label>
+                                <input name="accountStatus" value="<%= accountStatuses[i].id %>"
+                                       type="checkbox" <%= (accountStatuses[i].isSelected ? 'checked="checked"' : '') %>>
+                                <%= accountStatuses[i].name %>
+                            </label>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-box">
+                    <div class="container-head js-container-head">
+                        <div class="option-select-label">
+                            Service
+                        </div>
+                    </div>
+                    <div role="group" aria-labelledby="option-select-title-service" class="options-container" id="services">
+                        <div class="js-auto-height-inner">
+                            <% for (let i = 0; i < services.length; i += 1) { %>
+                            <label>
+                                <input name="service" value="<%= services[i].id %>"
+                                       type="checkbox" <%= (services[i].isSelected ? 'checked="checked"' : '') %>>
+                                <%= services[i].name %>
+                            </label>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="button-secondary">Apply filter</button>
+
+            </form>
+        </div>
+        <% } %>
+        <div class="col-<%= (showFilters ? 8 : 12) %>">
+
+            <%- include('../../sharedViews/pagination', paginationModel); %>
+            <vue-users-table>
+            <table class="data">
+                <thead>
+                <%
+                let baseSortUri = `?criteria=${criteria}&page=${page}&showFilters=${showFilters}`;
+
+                if (organisationTypes && organisationTypes.length > 0) {
+                    const selected = organisationTypes.filter(x => x.isSelected);
+                    selected.forEach((item) => {
+                        baseSortUri += `&organisationType=${item.id}`;
+                    });
+                }
+                if (accountStatuses && accountStatuses.length > 0) {
+                    const selected = accountStatuses.filter(x => x.isSelected);
+                    selected.forEach((item) => {
+                        baseSortUri += `&accountStatus=${item.id}`;
+                    });
+                }
+                if (services && services.length > 0) {
+                    const selected = services.filter(x => x.isSelected);
+                    selected.forEach((item) => {
+                        baseSortUri += `&service=${item.id}`;
+                    });
+                }
+                %>
+                <tr class="sortable">
+                    <th scope="col" class="cwp-15">
+                        <a href="<%=baseSortUri%>&sort=name&sortdir=<%= sort.name.nextDirection %>"
+                           class="<% if (sort.name.applied) { %>sorted dir-<%= (sort.name.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
+                        >Name</a></th>
+                    <th scope="col" class="cwp-35">
+                        <a href="<%=baseSortUri%>&sort=email&sortdir=<%= sort.email.nextDirection %>"
+                           class="<% if (sort.email.applied) { %>sorted dir-<%= (sort.email.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
+                        >Email</a></th>
+                    <th scope="col" class="cwp-25">
+                        <a href="<%=baseSortUri%>&sort=organisation&sortdir=<%= sort.organisation.nextDirection %>"
+                           class="<% if (sort.organisation.applied) { %>sorted dir-<%= (sort.organisation.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
+                        >Organisation</a></th>
+                    <th scope="col" class="cwp-15">
+                        <a href="<%=baseSortUri%>&sort=lastlogin&sortdir=<%= sort.lastLogin.nextDirection %>"
+                           class="<% if (sort.lastLogin.applied) { %>sorted dir-<%= (sort.lastLogin.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
+                        >Last Login</a></th>
+                    <th scope="col" class="cwp-10">
+                        <a href="<%=baseSortUri%>&sort=status&sortdir=<%= sort.status.nextDirection %>"
+                           class="<% if (sort.status.applied) { %>sorted dir-<%= (sort.status.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
+                        >Status</a></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <% if(locals.users.length === 0 && locals.criteria) { %>
+                <tr>
+                    <td colspan="5"><span class="empty-state">No users found</span></td>
+                </tr>
+                <% } %>
+                <% for (let i = 0; i < locals.users.length; i++) { %>
+                <tr>
+                    <td><a href="/users/<%= users[i].id %>/"><%= users[i].name %></a></td>
+                    <td><span class="breakable"><%= users[i].email %></span></td>
+                    <td>
+                        <% if(users[i].organisation) { %>
+                        <%= users[i].organisation.name %>
+                        <% }else { %>
+                        Unknown
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if(locals.users[i].lastLogin) { %>
+                        <%= locals.moment(locals.users[i].lastLogin).fromNow() %>
+                        <% } else { %>
+                        Never
+                        <% } %>
+                    </td>
+                    <td><%= users[i].status.description %></td>
+                </tr>
+                <% } %>
+                </tbody>
+            </table>
+            </vue-users-table>
+            <%- include('../../sharedViews/pagination', paginationModel); %>
         </div>
     </div>
 </div>
 
-<%- include('../../sharedViews/pagination', paginationModel); %>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/vue"></script>
+<script>
 
-<div class="row">
-    <% if (showFilters) { %>
-    <div class="col-4">
-        <form method="post">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-            <input type="hidden" name="criteria" value="<%= criteria %>"/>
-            <input type="hidden" name="page" value="<%= page %>"/>
-            <input type="hidden" name="sort" value="<%= sortBy %>"/>
-            <input type="hidden" name="sortDir" value="<%= sortOrder %>"/>
-            <input type="hidden" name="showFilters" value="true"/>
 
-            <div class="filter-box">
-                <div class="container-head js-container-head">
-                    <div class="option-select-label">
-                        Organisation type
-                    </div>
-                </div>
-                <div role="group" aria-labelledby="option-select-title-organisationtype" class="options-container"
-                     id="organisationtypes">
-                    <div class="js-auto-height-inner">
-                        <% for (let i = 0; i < organisationTypes.length; i += 1) { %>
-                        <label>
-                            <input name="organisationType" value="<%= organisationTypes[i].id %>"
-                                   type="checkbox" <%= (organisationTypes[i].isSelected ? 'checked="checked"' : '') %>>
-                            <%= organisationTypes[i].name %>
-                        </label>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
 
-            <div class="filter-box">
-                <div class="container-head js-container-head">
-                    <div class="option-select-label">
-                        Account status
-                    </div>
-                </div>
-                <div role="group" aria-labelledby="option-select-title-account-status" class="options-container"
-                     id="account-status">
-                    <div class="js-auto-height-inner">
-                        <% for (let i = 0; i < accountStatuses.length; i += 1) { %>
-                        <label>
-                            <input name="accountStatus" value="<%= accountStatuses[i].id %>"
-                                   type="checkbox" <%= (accountStatuses[i].isSelected ? 'checked="checked"' : '') %>>
-                            <%= accountStatuses[i].name %>
-                        </label>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
+      var UsersTable = Vue.extend({
+        template: '<div><h1>Hazza, the fallback was removed!</h1></div>'
+      })
 
-            <div class="filter-box">
-                <div class="container-head js-container-head">
-                    <div class="option-select-label">
-                        Service
-                    </div>
-                </div>
-                <div role="group" aria-labelledby="option-select-title-service" class="options-container" id="services">
-                    <div class="js-auto-height-inner">
-                        <% for (let i = 0; i < services.length; i += 1) { %>
-                        <label>
-                            <input name="service" value="<%= services[i].id %>"
-                                   type="checkbox" <%= (services[i].isSelected ? 'checked="checked"' : '') %>>
-                            <%= services[i].name %>
-                        </label>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
+      Vue.component('vue-users-table', UsersTable)
 
-            <button class="button-secondary">Apply filter</button>
+      const app = new Vue({
+        el: '#vue-wrap'
+      })
 
-        </form>
-    </div>
-    <% } %>
-    <div class="col-<%= (showFilters ? 8 : 12) %>">
-        <table class="data">
-            <thead>
-            <%
-            let baseSortUri = `?criteria=${criteria}&page=${page}&showFilters=${showFilters}`;
 
-            if (organisationTypes && organisationTypes.length > 0) {
-                const selected = organisationTypes.filter(x => x.isSelected);
-                selected.forEach((item) => {
-                    baseSortUri += `&organisationType=${item.id}`;
-                });
+
+    $(function () {
+      var $inputs = $('#filter-form input');
+      $inputs.on('change', function () {
+
+        var postData = {}
+
+        $inputs.each(function() {
+
+            if (postData.hasOwnProperty(this.name)) {
+              if (this.type === 'checkbox' && this.checked) {
+                postData[this.name].push(this.value);
+              }
+            } else {
+              if (this.type === 'checkbox') {
+                if (this.checked) {
+                  postData[this.name] = [this.value];
+                }
+              } else {
+                postData[this.name] = this.value;
+              }
             }
-            if (accountStatuses && accountStatuses.length > 0) {
-                const selected = accountStatuses.filter(x => x.isSelected);
-                selected.forEach((item) => {
-                    baseSortUri += `&accountStatus=${item.id}`;
-                });
-            }
-            if (services && services.length > 0) {
-                const selected = services.filter(x => x.isSelected);
-                selected.forEach((item) => {
-                    baseSortUri += `&service=${item.id}`;
-                });
-            }
-            %>
-            <tr class="sortable">
-                <th scope="col" class="cwp-15">
-                    <a href="<%=baseSortUri%>&sort=name&sortdir=<%= sort.name.nextDirection %>"
-                       class="<% if (sort.name.applied) { %>sorted dir-<%= (sort.name.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
-                    >Name</a></th>
-                <th scope="col" class="cwp-35">
-                    <a href="<%=baseSortUri%>&sort=email&sortdir=<%= sort.email.nextDirection %>"
-                       class="<% if (sort.email.applied) { %>sorted dir-<%= (sort.email.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
-                    >Email</a></th>
-                <th scope="col" class="cwp-25">
-                    <a href="<%=baseSortUri%>&sort=organisation&sortdir=<%= sort.organisation.nextDirection %>"
-                       class="<% if (sort.organisation.applied) { %>sorted dir-<%= (sort.organisation.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
-                    >Organisation</a></th>
-                <th scope="col" class="cwp-15">
-                    <a href="<%=baseSortUri%>&sort=lastlogin&sortdir=<%= sort.lastLogin.nextDirection %>"
-                       class="<% if (sort.lastLogin.applied) { %>sorted dir-<%= (sort.lastLogin.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
-                    >Last Login</a></th>
-                <th scope="col" class="cwp-10">
-                    <a href="<%=baseSortUri%>&sort=status&sortdir=<%= sort.status.nextDirection %>"
-                       class="<% if (sort.status.applied) { %>sorted dir-<%= (sort.status.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
-                    >Status</a></th>
-            </tr>
-            </thead>
-            <tbody>
-            <% if(locals.users.length === 0 && locals.criteria) { %>
-            <tr>
-                <td colspan="5"><span class="empty-state">No users found</span></td>
-            </tr>
-            <% } %>
-            <% for (let i = 0; i < locals.users.length; i++) { %>
-            <tr>
-                <td><a href="/users/<%= users[i].id %>/"><%= users[i].name %></a></td>
+        });
 
-                <td><span class="breakable"><%= users[i].email %></span></td>
-                <td>
-                    <% if(users[i].organisation) { %>
-                    <%= users[i].organisation.name %>
-                    <% }else { %>
-                    Unknown
-                    <% } %>
-                </td>
-                <td>
-                    <% if(locals.users[i].lastLogin) { %>
-                    <%= locals.moment(locals.users[i].lastLogin).fromNow() %>
-                    <% } else { %>
-                    Never
-                    <% } %>
-                </td>
-                <td><%= users[i].status.description %></td>
-            </tr>
-            <% } %>
-            </tbody>
-        </table>
-    </div>
-</div>
+        postData.page = 1;
 
-<%- include('../../sharedViews/pagination', paginationModel); %>
+            $.ajax({
+              type: 'POST',
+              data: postData,
+              dataType: 'json',
+              success: function (data) {
+                app.users = data.users,
+                app.totalNumberOfResults = data.totalNumberOfResults
+              },
+            })
+
+      });
+    });
+
+    
+</script>
