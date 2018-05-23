@@ -183,7 +183,7 @@
         <div class="col-<%= (showFilters ? 8 : 12) %>">
 
             <%- include('../../sharedViews/pagination', paginationModel); %>
-            <vue-users-table>
+            <vue-users-table :users="userList">
             <table class="data">
                 <thead>
                 <%
@@ -224,7 +224,7 @@
                     <th scope="col" class="cwp-15">
                         <a href="<%=baseSortUri%>&sort=lastlogin&sortdir=<%= sort.lastLogin.nextDirection %>"
                            class="<% if (sort.lastLogin.applied) { %>sorted dir-<%= (sort.lastLogin.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
-                        >Last Login</a></th>
+                        >Last login</a></th>
                     <th scope="col" class="cwp-10">
                         <a href="<%=baseSortUri%>&sort=status&sortdir=<%= sort.status.nextDirection %>"
                            class="<% if (sort.status.applied) { %>sorted dir-<%= (sort.status.nextDirection === 'desc') ? 'd' : 'a' %> <% } %>"
@@ -274,19 +274,70 @@
 
 
 
-      var UsersTable = Vue.extend({
-        template: '<div><h1>Hazza, the fallback was removed!</h1></div>'
-      })
 
-      Vue.component('vue-users-table', UsersTable)
+      var UsersTable = Vue.extend({
+        props: ['users'],
+        template: `
+            <table class="data">
+            <thead>
+                <tr>
+                    <th scope="col" class="cwp-15">Name</th>
+                    <th scope="col" class="cwp-35">Email</th>
+                    <th scope="col" class="cwp-25">Organisation</th>
+                    <th scope="col" class="cwp-15">Last login</th>
+                    <th scope="col" class="cwp-10">Status</th>
+                </tr>
+            </thead>
+                <tbody>
+                    <tr v-for="user in users" :key="user.id">
+                    <td><a :href="'/users/' + user.id + '/'">{{ user.name }}</a></td>
+                    <td><span class="breakable">{{ user.email }}</span></td>
+                    <td>
+                        <span v-if="user.organisation">{{ user.organisation.name }}</span>
+                        <span v-else>Unknown</span>
+                    </td>
+                    <td>
+                        <span v-if="user.lastLogin">{{ user.lastLogin }}</span>
+                        <span v-else>Never</span>
+                    </td>
+                    <td>{{ user.status.description }}</td>
+                    </tr>
+                    <tr v-if="users.length === 0">
+                        <td colspan="5"><span class="empty-state">No users found</span></td>
+                    </tr>
+                </tbody>
+            </table>`,
+      })
 
       const app = new Vue({
-        el: '#vue-wrap'
+        el: '#vue-wrap',
+        data: {
+          userList: []
+        },
+        components: {
+          'vue-users-table': UsersTable
+        },
       })
 
-
-
     $(function () {
+
+      var postDataInit = {}
+      var inputs = $('form').eq(0).find('input');
+
+      inputs.each(function() {
+        postDataInit[this.name] = $(this).val();
+      });
+
+
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: postDataInit,
+        success: function (data) {
+          app.userList = data.users
+        },
+      })
+
       var $inputs = $('#filter-form input');
       $inputs.on('change', function () {
 
@@ -316,7 +367,7 @@
               data: postData,
               dataType: 'json',
               success: function (data) {
-                app.users = data.users,
+                app.userList = data.users,
                 app.totalNumberOfResults = data.totalNumberOfResults
               },
             })
