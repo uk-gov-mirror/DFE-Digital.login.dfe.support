@@ -25,7 +25,7 @@ const postConfirmNewUser = async (req, res) => {
     redirectUri = `${config.hostingEnvironment.servicesUrl}/auth/cb`;
   }
   let organisation = null;
-  if (req.session.user.organisationId){
+  if (req.session.user && req.session.user.organisationId){
     organisation = await getOrganisationById(req.session.user.organisationId, req.id);
   }
 
