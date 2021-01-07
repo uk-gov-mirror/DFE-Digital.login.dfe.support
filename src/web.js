@@ -20,6 +20,7 @@ const setCorrelationId = require('express-mw-correlation-id');
 const registerRoutes = require('./routes');
 const { getErrorHandler, ejsErrorPages } = require('login.dfe.express-error-handling');
 const configSchema = require('./infrastructure/config/schema');
+const { setUserContext } = require('./infrastructure/utils');
 
 configSchema.validate();
 
@@ -105,6 +106,7 @@ const init = async () => {
   app.set('layout', 'sharedViews/layout');
 
   await oidc.init(app);
+  app.use(setUserContext);
 
   app.use('/assets', express.static(path.join(__dirname, 'app/assets')));
   registerRoutes(app, csrf);
