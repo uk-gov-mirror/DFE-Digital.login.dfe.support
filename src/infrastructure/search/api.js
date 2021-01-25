@@ -129,7 +129,9 @@ const searchForUsers = async (criteria, pageNumber, sortBy, sortDirection, filte
 // TODO: Add correllation ID
 const getSearchDetailsForUserById = async (id) => {
   try {
+    console.log("1-Search Api - ", id);
     const user = await callApi(`/users/${id}`, 'GET');
+    console.log("2-Search Api Result- ", user);
     return user ? mapSearchUserToSupportModel(user) : undefined;
   } catch (e) {
     throw new Error(`Error getting user ${id} from search - ${e.message}`);
@@ -193,7 +195,9 @@ const updateDeviceInSearch = async (device, correlationId) => {
 };
 
 const updateIndex = async (userId, body, correlationId) => {
+  console.log('4- Search API Update Index', userId);
   await callApi(`/users/${userId}`, 'PATCH', body, correlationId);
+  console.log('5- Search API Update Index End', userId);
 };
 
 const createIndex = async (id, correlationId) => {

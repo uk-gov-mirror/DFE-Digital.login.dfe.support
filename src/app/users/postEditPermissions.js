@@ -38,6 +38,7 @@ const editUserPermissions = async(uid, req, model) => {
 
 
 const postEditPermissions = async (req, res) => {
+  console.log('1- Post Permission');
   const model = validatePermissions(req);
   if (Object.keys(model.validationMessages).length > 0) {
     model.csrfToken = req.csrfToken();
@@ -58,7 +59,9 @@ const postEditPermissions = async (req, res) => {
    }
 
   // patch search index
+  console.log('2- Post Permission', uid);
   const userSearchDetails = await getSearchDetailsForUserById(uid);
+  console.log('3- Post Permission', userSearchDetails);
   if (userSearchDetails) {
     const currentOrgDetails = userSearchDetails.organisations;
     const organisations = currentOrgDetails.map( org => {
@@ -70,11 +73,13 @@ const postEditPermissions = async (req, res) => {
     const patchBody = {
       organisations
     };
+    console.log('4- Post Permission Update Index', patchBody);
     await updateIndex(uid, patchBody, req.id);
   }
 
   const fullname = model.userFullName;
   const organisationName = model.organisationName;
+  console.log('5- Post Permission Logger Audit');
   logger.audit(`${req.user.email} (id: ${req.user.sub}) edited permission level to ${permissionName} for organisation ${organisationName} (id: ${req.params.id}) for user ${req.session.user.email} (id: ${uid})`, {
     type: 'support',
     subType: 'user-org-permission-edited',
@@ -87,6 +92,7 @@ const postEditPermissions = async (req, res) => {
       newValue: permissionName,
     }],
   });
+  console.log('6- Post Permission Logger Audit End');
   res.flash('info', `${req.session.user.email} now has ${permissionName} access`);
   return res.redirect(`/users/${uid}/organisations`);
 };
