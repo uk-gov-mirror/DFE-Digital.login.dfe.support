@@ -60,9 +60,13 @@ const getPendingRequests = async (userId, correlationId) => {
 };
 
 const action = async (req, res) => {
+  console.log("1-org --1");
   const user = await getUserDetails(req);
+  console.log("2-org user details", user);
   const organisationDetails = await getOrganisations(user.id, req.id);
+  console.log("3-org org details", organisationDetails);
   const organisationRequests = !user.id.startsWith('inv-') ? await getPendingRequests(user.id, req.id) : [];
+  console.log("4-org ", organisationRequests);
   const allOrgs = organisationDetails.concat(organisationRequests);
   const sortedOrgs = sortBy(allOrgs, 'name');
 
@@ -72,6 +76,7 @@ const action = async (req, res) => {
     email: user.email,
   };
 
+  console.log("5-org Audit starts");
   logger.audit(`${req.user.email} (id: ${req.user.sub}) viewed user ${user.email} (id: ${user.id})`, {
     type: 'organisations',
     subType: 'user-view',
@@ -79,6 +84,8 @@ const action = async (req, res) => {
     userEmail: req.user.email,
     viewedUser: user.id,
   });
+
+  console.log("6-org  audit ends");
 
   sendResult(req, res, 'users/views/organisations', {
     csrfToken: req.csrfToken(),

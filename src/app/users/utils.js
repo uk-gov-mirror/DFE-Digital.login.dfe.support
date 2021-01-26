@@ -145,8 +145,11 @@ const mapUserToSupportModel = (user, userFromSearch) => {
 };
 
 const getUserDetailsById = async (uid, correlationId) => {
+  console.log("1-user detail --1");
   if (uid.startsWith('inv-')) {
+    console.log("2-user detail --invitation");
     const invitation = await getInvitation(uid.substr(4), correlationId);
+    console.log("3-user detail inv object", invitation);
     return {
       id: uid,
       name: `${invitation.firstName} ${invitation.lastName}`,
@@ -161,10 +164,14 @@ const getUserDetailsById = async (uid, correlationId) => {
       deactivated: invitation.deactivated
     };
   } else {
+    console.log("4-user detail -- user search");
     const userSearch = await getSearchDetailsForUserById(uid);
+    console.log("5-user detail --", userSearch);
     const rawUser = await getUser(uid, correlationId);
+    console.log("6-user detail --", rawUser);
     const user = mapUserToSupportModel(rawUser, userSearch);
     const serviceDetails = await getServicesByUserId(uid, correlationId);
+    console.log("7-user detail --", serviceDetails);
 
     const ktsDetails = serviceDetails ? serviceDetails.find((c) => c.serviceId.toLowerCase() === config.serviceMapping.key2SuccessServiceId.toLowerCase()) : undefined;
     let externalIdentifier = '';
@@ -174,6 +181,8 @@ const getUserDetailsById = async (uid, correlationId) => {
         externalIdentifier = key.value;
       }
     }
+
+    console.log("8-user detail -- End");
 
     return {
       id: uid,
